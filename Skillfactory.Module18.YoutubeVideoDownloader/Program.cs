@@ -1,5 +1,11 @@
 ﻿using YoutubeExplode;
 using YoutubeExplode.Converter;
+using Microsoft.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Skillfactory.Module18.YoutubeVideoDownloader.Services;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using Microsoft.Extensions.Hosting;
 
 namespace Skillfactory.Module18.YoutubeVideoDownloader
 {
@@ -7,37 +13,34 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
     {
         static async Task Main(string[] args)
         {
-            var youtube = new YoutubeClient();
-
-            var videoUrl = "https://www.youtube.com/watch?v=Zd3Mh3TeOGI";
-            Console.WriteLine("getting data");
-
-            var vid = youtube.Videos.GetAsync(videoUrl);
-            Console.WriteLine(vid.Result.Title);
-
-            CancellationTokenSource CancelToken = new();
-            DownloadVid(videoUrl, CancelToken.Token);
-
-            Console.WriteLine("Press ESC to cancel donload");
-            switch (Console.ReadKey(false).Key)
-            {
-                case ConsoleKey.Escape:
-                    {
-                        CancelToken.Cancel(false);
-                        Console.WriteLine("CancellingDonload...");
-                        break;
-                    }
-                default: break;
-            }
-            
-            Console.ReadKey();
+            var host = CreateHostBuilder().Build();
+            host.Services.GetRequiredService<IUI>().Run();
         }
 
-        static async Task DownloadVid(string videoUrl, CancellationToken ChancelToken)
+        private static IHostBuilder CreateHostBuilder()
         {
-            var youtube = new YoutubeClient();
-            await youtube.Videos.DownloadAsync(videoUrl, "video.mp4", null, ChancelToken);
-            Console.WriteLine("done");
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Build())
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            Log.Logger.Information("Application Starting");
+
+            return  Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddTransient<IUI, UI>();
+                    services.AddSingleton<IVideoInfoService, MyYoutubeClient>();
+                    services.AddSingleton<IVideoDownloader, MyYoutubeClient>();
+                })
+                .UseSerilog();
         }
     }
 }
