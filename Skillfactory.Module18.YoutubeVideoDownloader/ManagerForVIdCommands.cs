@@ -26,7 +26,14 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
 
         public void ApplyForSelectedIndex(int index, Action<IVideoCommand> action)
         {
-            action(_factory.CommandStorage.List[index]);
+            if (_factory.CommandStorage.List.Count > index)
+            {
+                action(_factory.CommandStorage.List[index]);
+            }
+            else
+            {
+                _logger.LogError("Command index {index} is missing", index);
+            }
         }
 
         public void ApplyForAll(Action<IVideoCommand> action)
