@@ -2,8 +2,6 @@
 {
     public interface ICommandCanceller
     {
-        List<IVideoCommand> List { get; }
-
         bool Remove(IVideoCommand command);
     }
 }

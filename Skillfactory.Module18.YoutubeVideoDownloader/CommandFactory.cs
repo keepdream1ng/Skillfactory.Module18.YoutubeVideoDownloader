@@ -13,7 +13,7 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
 {
     public class CommandFactory : ICommandFactory
     {
-        private ICommandStorage _commandStorage;
+        public ICommandStorage CommandStorage { get;}
         private readonly IVideoDownloader _videoDownloader;
         private readonly IVideoInfoService _videoInfoService;
         private readonly IConfiguration _config;
@@ -28,7 +28,7 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
             ILogger<CommandFactory> factoryLogger
             )
         {
-            _commandStorage = commandStorage;
+            CommandStorage = commandStorage;
             _videoDownloader = videoDownloader;
             _videoInfoService = videoInfoService;
             _config = config;
@@ -39,13 +39,13 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
         public void NewVideoInfo(string videoURL)
         {
             _factoryLogger.LogInformation("Creating command for {URL} video {action}", videoURL, "info");
-            _commandStorage.Add(new GetVideoInfoCommand(videoURL, _videoInfoService, _commandLogger));
+            CommandStorage.Add(new GetVideoInfoCommand(videoURL, _videoInfoService, _commandLogger));
         }
 
         public void NewDownload(IVideo video)
         {
             _factoryLogger.LogInformation("Creating command for {URL} video {action}", video.Url, "download");
-            _commandStorage.Add(new DownloadVideoCommand(video, _videoDownloader, _config, _commandLogger));
+            CommandStorage.Add(new DownloadVideoCommand(video, _videoDownloader, _config, _commandLogger));
         }
     }
 }

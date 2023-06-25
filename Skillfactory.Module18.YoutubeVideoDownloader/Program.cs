@@ -40,12 +40,13 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
             return  Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddTransient<IUI, UI>();
                     services.AddSingleton<IVideoInfoService, MyYoutubeClient>();
                     services.AddSingleton<IVideoDownloader, MyYoutubeClient>();
                     services.AddSingleton<ICommandStorage>(vidCommandsList);
                     services.AddSingleton<ICommandCanceller>(vidCommandsList);
                     services.AddSingleton<ICommandFactory, CommandFactory>();
+                    services.AddSingleton<IManagerForVIdCommands, ManagerForVIdCommands>();
+                    services.AddSingleton<IUI, UI>();
                 })
                 .UseSerilog();
         }

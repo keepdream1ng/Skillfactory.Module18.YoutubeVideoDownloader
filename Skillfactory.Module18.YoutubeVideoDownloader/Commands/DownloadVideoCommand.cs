@@ -40,13 +40,14 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
 
         public async void Execute()
         {
-            _logger.LogInformation("Getting video from {URL}", VideoInfo.Url);
+            _logger.LogInformation("{action} video from {URL}", "Downloading", VideoInfo.Url);
             await _videoProvider.DownloadVideo(VideoInfo.Url, _filename, null, _cancellationTokenSource.Token);
+            _logger.LogInformation("{action} video from {URL}", "Finished download", VideoInfo.Url);
         }
 
         public void Cancel()
         {
-            _logger.LogInformation("Aborting video download from {URL}", VideoInfo.Url);
+            _logger.LogInformation("{action} video from {URL}", "Aborting download", VideoInfo.Url);
             _cancellationTokenSource?.Cancel();
         }
     }
