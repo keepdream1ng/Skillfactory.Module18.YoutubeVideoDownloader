@@ -45,6 +45,7 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
                     services.AddSingleton<IVideoDownloader, MyYoutubeClient>();
                     services.AddSingleton<ICommandStorage>(vidCommandsList);
                     services.AddSingleton<ICommandCanceller>(vidCommandsList);
+                    services.AddSingleton<ICommandFactory, CommandFactory>();
                 })
                 .UseSerilog();
         }

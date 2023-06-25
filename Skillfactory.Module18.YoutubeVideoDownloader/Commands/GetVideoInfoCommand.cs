@@ -14,10 +14,10 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
         public IVideo VideoInfo { get; private set; }
         private string _videoURL;
         private IVideoInfoService _infoProvider;
-        private readonly ILogger<GetVideoInfoCommand> _logger;
+        private readonly ILogger<IVideoCommand> _logger;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public GetVideoInfoCommand(string videoURL, IVideoInfoService infoService, ILogger<GetVideoInfoCommand> logger)
+        public GetVideoInfoCommand(string videoURL, IVideoInfoService infoService, ILogger<IVideoCommand> logger)
         {
             _videoURL = videoURL;
             _infoProvider = infoService;

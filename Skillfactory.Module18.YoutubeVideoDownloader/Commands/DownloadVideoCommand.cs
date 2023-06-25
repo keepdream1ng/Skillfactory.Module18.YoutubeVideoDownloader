@@ -16,7 +16,7 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
         private IVideoDownloader _videoProvider;
         private CancellationTokenSource _cancellationTokenSource;
         private IConfiguration _config;
-        private readonly ILogger<DownloadVideoCommand> _logger;
+        private readonly ILogger<IVideoCommand> _logger;
 
         private string _filename
         {
@@ -29,7 +29,7 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
         public DownloadVideoCommand(IVideo vidInfo,
             IVideoDownloader vidProvider,
             IConfiguration config,
-            ILogger<DownloadVideoCommand> logger)
+            ILogger<IVideoCommand> logger)
         {
             VideoInfo = vidInfo;
             _videoProvider = vidProvider;
