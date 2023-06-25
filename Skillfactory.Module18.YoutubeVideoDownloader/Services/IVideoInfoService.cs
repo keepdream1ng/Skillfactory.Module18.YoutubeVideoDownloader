@@ -7,6 +7,6 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Services
         /// <summary>
         /// Returns a Video info class, from the specified URL.
         /// </summary>
-        ValueTask<Video> GetVideoInfo(string videoURL);
+        ValueTask<Video> GetVideoInfo(string videoURL, CancellationToken cancellationToken);
     }
 }

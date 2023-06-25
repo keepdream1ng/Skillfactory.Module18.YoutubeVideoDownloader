@@ -12,9 +12,9 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Services
     // In the name of SOLID, this shall be done...
     public class MyYoutubeClient : YoutubeClient, IVideoInfoService, IVideoDownloader
     {
-        public async ValueTask<Video> GetVideoInfo(string videoURL)
+        public async ValueTask<Video> GetVideoInfo(string videoURL, CancellationToken cancellationToken)
         {
-            return await Videos.GetAsync(videoURL);
+            return await Videos.GetAsync(videoURL, cancellationToken);
         }
 
         public async ValueTask DownloadVideo(string videoURL, string outputFile, IProgress<double> progress = null, CancellationToken cancellationToken = default)
