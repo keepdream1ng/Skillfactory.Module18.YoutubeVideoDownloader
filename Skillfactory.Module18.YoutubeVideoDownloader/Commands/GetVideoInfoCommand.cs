@@ -28,13 +28,24 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
         public async void Execute()
         {
             _logger.LogInformation("{action} from {URL}", "Getting info", _videoURL);
-            VideoInfo = await _infoProvider.GetVideoInfo(_videoURL, _cancellationTokenSource.Token);
-            _logger.LogInformation("{action} from {URL}", "Info obtained", _videoURL);
+            try
+            {
+                VideoInfo = await _infoProvider.GetVideoInfo(_videoURL, _cancellationTokenSource.Token);
+                _logger.LogInformation("{action} from {URL}", "Info obtained", _videoURL);
+            }
+            catch (ArgumentException e)
+            {
+                _logger.LogError("{action} from {URL}", "Invalid argument", _videoURL);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("{action} from {URL}", e.Message, _videoURL);
+            }
         }
 
         public void Cancel()
         {
-            _logger.LogInformation("{action} from {URL}", "Aborting getting info", _videoURL);
+            _logger.LogInformation("{action} from {URL}", "Removing command getting info", _videoURL);
             _cancellationTokenSource?.Cancel();
         }
     }

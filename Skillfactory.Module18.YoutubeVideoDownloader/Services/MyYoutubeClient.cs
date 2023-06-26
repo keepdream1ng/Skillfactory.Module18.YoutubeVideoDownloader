@@ -14,7 +14,15 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Services
     {
         public async ValueTask<Video> GetVideoInfo(string videoURL, CancellationToken cancellationToken)
         {
-            return await Videos.GetAsync(videoURL, cancellationToken);
+            try
+            {
+                return await Videos.GetAsync(videoURL, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
 
         public async ValueTask DownloadVideo(string videoURL, string outputFile, IProgress<double> progress = null, CancellationToken cancellationToken = default)

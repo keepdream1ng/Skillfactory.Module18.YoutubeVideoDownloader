@@ -38,9 +38,10 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
 
         public void ApplyForAll(Action<IVideoCommand> action)
         {
-            foreach (IVideoCommand c in _factory.CommandStorage.List)
+            // Iterating list from the end give the option to safely remove elements.
+            for (int i = _factory.CommandStorage.List.Count - 1; i >= 0; i--)
             {
-                action(c);
+                action(_factory.CommandStorage.List[i]);
             }
         }
 
@@ -56,13 +57,21 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
 
         public void DownloadBasedOnInfo(IVideoCommand command)
         {
-            if (command is not GetVideoInfoCommand)
+            if ((command is not GetVideoInfoCommand) || (command.VideoInfo is null))
             {
                 return;
             }
             _factory.NewDownload(command.VideoInfo);
             // Removing command for just getting info, now list has this info but in the Download command.
             _canceller.Remove(command);
+        }
+
+        public void GetCommandInfo(IVideoCommand command)
+        {
+            if (command.VideoInfo != null)
+            {
+                Console.WriteLine($"#{_factory.CommandStorage.List.IndexOf(command)} {command.VideoInfo.Title} {command.VideoInfo.Duration}");
+            }
         }
     }
 }

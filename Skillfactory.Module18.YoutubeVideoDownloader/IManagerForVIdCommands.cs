@@ -9,5 +9,6 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
         void ApplyForSelectedIndex(int index, Action<IVideoCommand> action);
         void CancelCommand(IVideoCommand command);
         void DownloadBasedOnInfo(IVideoCommand command);
+        void GetCommandInfo(IVideoCommand command);
     }
 }

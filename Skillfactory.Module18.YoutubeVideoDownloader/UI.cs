@@ -28,12 +28,18 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
 
         private void GetSelectionInput()
         {
+            Console.WriteLine("Tip: Press 'A' and 'I' to get list of videos you working with with command indexes");
             ConsoleKeyInfo input;
             while (true)
             {
                 Console.WriteLine("Press 'N' to input new URL, press 0 - 9 for selecting previous commands, 'A' to select them all, 'Q' to quit.");
                 input = Console.ReadKey(true);
-                _log.LogInformation("User pressed {input}", input.Key);
+                if (input.KeyChar.IsDigit())
+                {
+                    int index = int.Parse(input.KeyChar.ToString());
+                    _log.LogInformation("Selected index {index}", index);
+                    _manager.ApplyForSelectedIndex(index, GetActionInput());
+                } 
                 if (input.Key == ConsoleKey.N)
                 {
                     Console.WriteLine("Enter the video URL");
@@ -43,12 +49,6 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
                 {
                     _log.LogInformation("User selected all active commands");
                     _manager.ApplyForAll(GetActionInput());
-                }
-                if (input.KeyChar.IsDigit())
-                {
-                    int index = int.Parse(input.KeyChar.ToString());
-                    _log.LogInformation("Selected index {index}", index);
-                    _manager.ApplyForSelectedIndex(index, GetActionInput());
                 }
                 if (input.Key == ConsoleKey.Q)
                 {
@@ -60,21 +60,20 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
 
         private Action<IVideoCommand> GetActionInput()
         {
-            Console.WriteLine("Press 'D' to download selected, 'C' to cancel selected command");
+            Console.WriteLine("Press 'I' for video info, 'D' to download selected, 'C' to remove and cancel selected command");
             ConsoleKeyInfo input;
             while (true)
             {
                 input = Console.ReadKey(true);
-                _log.LogInformation("User pressed {input}", input.Key);
-
-                if (input.Key == ConsoleKey.D)
+                switch (input.Key)
                 {
-                    return ((IVideoCommand c) => _manager.DownloadBasedOnInfo(c));
-                }
-
-                if (input.Key == ConsoleKey.C)
-                {
-                    return ((IVideoCommand c) => _manager.CancelCommand(c));
+                    case ConsoleKey.D:
+                        return ((IVideoCommand c) => _manager.DownloadBasedOnInfo(c));
+                    case ConsoleKey.C:
+                        return ((IVideoCommand c) => _manager.CancelCommand(c));
+                    case ConsoleKey.I:
+                        return ((IVideoCommand c) => _manager.GetCommandInfo(c));
+                    default: break;
                 }
             }
         }
