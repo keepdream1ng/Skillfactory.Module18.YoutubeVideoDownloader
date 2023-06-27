@@ -57,7 +57,7 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader
 
         public void DownloadBasedOnInfo(IVideoCommand command)
         {
-            if ((command is not GetVideoInfoCommand) || (command.VideoInfo is null))
+            if ((command.VideoInfo is null) || (command is not GetVideoInfoCommand))
             {
                 return;
             }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YoutubeExplode.Videos;
+using Skillfactory.Module18.YoutubeVideoDownloader.CustomExtensionMethods;
 
 namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
 {
@@ -22,7 +23,7 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
         {
             get
             {
-                return $"{VideoInfo.Title}.{_config.GetValue<string>("OutputFormat")}";
+                return $"{VideoInfo.Title.GetSafeFileName()}.{_config.GetValue<string>("OutputFormat")}";
             }
         }
 
@@ -41,8 +42,19 @@ namespace Skillfactory.Module18.YoutubeVideoDownloader.Commands
         public async void Execute()
         {
             _logger.LogInformation("{action} video from {URL}", "Downloading", VideoInfo.Url);
-            await _videoProvider.DownloadVideo(VideoInfo.Url, _filename, null, _cancellationTokenSource.Token);
-            _logger.LogInformation("{action} video from {URL}", "Finished download", VideoInfo.Url);
+            try
+            {
+                await _videoProvider.DownloadVideo(VideoInfo.Url, _filename, null, _cancellationTokenSource.Token);
+                _logger.LogInformation("{action} video from {URL}", "Finished download", VideoInfo.Url);
+            }
+            catch (OperationCanceledException e)
+            {
+                _logger.LogDebug("{exception} catched", e.ToString);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("{exceprion} occured. {message}", e.ToString(), e.Message);
+            }
         }
 
         public void Cancel()
